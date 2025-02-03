@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fisch Orca Migration Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background-color: #121212;
+            color: #ffffff;
+        }
+        input {
+            margin: 5px;
+            padding: 8px;
+            background-color: #333;
+            border: 1px solid #555;
+            color: white;
+            border-radius: 5px;
+        }
+        button {
+            padding: 12px 20px;
+            cursor: pointer;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fisch Orca Migration Calculator</h1>
+    <p>Enter your server's uptime below to calculate the next migration event.</p>
+    <p><strong>How to find your server uptime:</strong> Open the menu, then enable the "Server Info UI is Enabled" option to view your server info.</p>
+    <label>Days: <input type="number" id="days" min="0"></label><br>
+    <label>Hours: <input type="number" id="hours" min="0"></label><br>
+    <label>Minutes: <input type="number" id="minutes" min="0"></label><br>
+    <button onclick="calculateMigration()">Calculate</button>
+    <p id="result">The next migration will happen at...</p>
+    
+    <script>
+        function calculateMigration() {
+            let days = parseInt(document.getElementById('days').value) || 0;
+            let hours = parseInt(document.getElementById('hours').value) || 0;
+            let minutes = parseInt(document.getElementById('minutes').value) || 0;
+            
+            let totalHours = days * 24 + hours + minutes / 60;
+            let currentCycle = Math.ceil((totalHours - 1) / 1.25);
+            let nextSpawn = 1 + 1.25 * currentCycle;
+            
+            let rdays = Math.floor(nextSpawn / 24);
+            let rhours = Math.floor(nextSpawn % 24);
+            let rminutes = Math.floor((nextSpawn % 1) * 60);
+            let remainingMinutes = Math.round((nextSpawn - totalHours) * 60);
+            
+            let resultText = `The next Orca event will happen at ${rdays}D ${rhours}H ${rminutes}M (in ${remainingMinutes} minutes)`;
+            
+			if(remainingMinutes > 60) {
+				resultText += "\nThere should be a migration happening right now!"
+			}
+			
+            document.getElementById('result').innerText = resultText;
+        }
+    </script>
+</body>
+</html>
