@@ -14,10 +14,9 @@
 </head>
 <body>
     <h1>Fisch Orca Migration Calculator</h1>
-    <p>Enter your server's uptime below to calculate the next migration event.</p>
-    <p><strong>How to find your server uptime:</strong> Open the menu, then enable the "Server Info UI is Enabled" option to view your server info. Then, find the data in the bottom left of your screen.</p>
-    <label>Days: <input type="number" id="days" min="0"></label><br>
-    <label>Hours: <input type="number" id="hours" min="0"></label><br>
+    <p>Enter your server's uptime below to calculate the next migration event.<br>You can find it by enabling the server info UI in the Menu.</p><br>
+    <label>Days: <input type="number" id="days" min="0"></label>
+    <label>Hours: <input type="number" id="hours" min="0"></label>
     <label>Minutes: <input type="number" id="minutes" min="0"></label><br>
     <button onclick="calculateMigration()">Calculate</button>
     <p id="result">The next migration will happen at...</p>
@@ -60,15 +59,7 @@
         const collapsible_btn = document.getElementById("collapsible-button");
         collapsible_btn.addEventListener("click", function() {
             this.classList.toggle("active");
-            var content = this.nextElementSibling;
-            var arrow = this.querySelector('.arrow');
-            if (content.style.display === "block") {
-                content.style.display = "none";
-                arrow.textContent = "↓";
-            } else {
-                content.style.display = "block";
-                arrow.textContent = "↑";
-            }
+            this.nextElementSibling.classList.toggle("active");
         });
     </script>
 </body>
