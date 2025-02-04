@@ -1,0 +1,91 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 50px;
+    background-color: #121212;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+input {
+    margin: 5px;
+    padding: 8px;
+    background-color: #333;
+    border: 1px solid #555;
+    color: white;
+    border-radius: 5px;
+}
+button {
+    padding: 12px 20px;
+    cursor: pointer;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+button:hover {
+    background-color: #0056b3;
+}
+.example-container {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+    margin-left: 0;
+    padding-right: 20px;
+}
+.example-container p {
+    flex: 1;
+    text-align: left;
+}
+.collapsible-button {
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+    padding: 8px 16px;
+    width: auto;
+    border: 1px solid #555;
+    text-align: left;
+    font-size: 16px;
+    border-radius: 5px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s;
+}
+.collapsible-button:hover {
+    transform: scale(1.05);
+}
+.collapsible-content {
+    padding: 10px;
+    margin-top: 0px;
+    display: none;
+    background-color: #333;
+    color: white;
+    border-radius: 5px;
+    margin-top: 10px;
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.example-images {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+.example-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    width: 80%;
+}
+.arrow {
+    margin-left: 10px;
+    font-size: 20px;
+}

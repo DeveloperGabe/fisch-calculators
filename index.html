@@ -3,43 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta property="og:title" content="Fisch Orca Migration Calculator" />
+    <meta property="og:title" content="Fisch Orca Migration Calculator" />
     <meta property="og:description" content="Calculates when the next Orca migration will be based on your server's uptime." />
     <meta property="og:image" content="assets/logo.png" />
     <meta property="og:url" content="https://developergabe.github.io/fisch-orca" />
     <meta property="og:type" content="website" />
-	<link rel="icon" href="assets/logo_transparent.png" type="image/png">
+    <link rel="icon" href="assets/logo_transparent.png" type="image/png">
+    <link rel="stylesheet" href="styles.css">
     <title>Fisch Orca Migration Calculator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 50px;
-            background-color: #121212;
-            color: #ffffff;
-        }
-        input {
-            margin: 5px;
-            padding: 8px;
-            background-color: #333;
-            border: 1px solid #555;
-            color: white;
-            border-radius: 5px;
-        }
-        button {
-            padding: 12px 20px;
-            cursor: pointer;
-            background-color: #007bff;
-            border: none;
-            color: white;
-            font-size: 16px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
 </head>
 <body>
     <h1>Fisch Orca Migration Calculator</h1>
@@ -50,30 +21,55 @@
     <label>Minutes: <input type="number" id="minutes" min="0"></label><br>
     <button onclick="calculateMigration()">Calculate</button>
     <p id="result">The next migration will happen at...</p>
-    
+
+    <button id="collapsible-button" class="collapsible-button">
+        Example Usage
+        <span class="arrow">↓</span>
+    </button>
+    <div class="collapsible-content">
+        <p>Place the server uptime data into the calculator as seen below and it'll find your next Orca event.</p>
+        <div class="example-images">
+            <img src="assets/Example_1.png" class="example-image">
+            <img src="assets/Example_2.png" class="example-image">
+			<img src="assets/Example_3.png" class="example-image">
+        </div>
+    </div>
+
     <script>
         function calculateMigration() {
-            let days = parseInt(document.getElementById('days').value) || 0;
-            let hours = parseInt(document.getElementById('hours').value) || 0;
-            let minutes = parseInt(document.getElementById('minutes').value) || 0;
+            const days = parseInt(document.getElementById('days').value) || 0;
+            const hours = parseInt(document.getElementById('hours').value) || 0;
+            const minutes = parseInt(document.getElementById('minutes').value) || 0;
             
-            let totalHours = days * 24 + hours + minutes / 60;
-            let currentCycle = Math.ceil((totalHours - 1) / 1.25);
-            let nextSpawn = 1 + 1.25 * currentCycle;
+            const totalHours = days * 24 + hours + minutes / 60;
+            const currentCycle = Math.ceil((totalHours - 1) / 1.25);
+            const nextSpawn = 1 + 1.25 * currentCycle;
             
-            let rdays = Math.floor(nextSpawn / 24);
-            let rhours = Math.floor(nextSpawn % 24);
-            let rminutes = Math.floor((nextSpawn % 1) * 60);
-            let remainingMinutes = Math.round((nextSpawn - totalHours) * 60);
+            const rdays = Math.floor(nextSpawn / 24);
+            const rhours = Math.floor(nextSpawn % 24);
+            const rminutes = Math.floor((nextSpawn % 1) * 60);
+            const remainingMinutes = Math.round((nextSpawn - totalHours) * 60);
             
             let resultText = `The next Orca event will happen at ${rdays}D ${rhours}H ${rminutes}M (in ${remainingMinutes} minutes)`;
             
-			if(remainingMinutes > 60) {
-				resultText += "\nThere should be a migration happening right now!"
-			}
-			
+            if(remainingMinutes > 60) resultText += "\nThere should be a migration happening right now!";
+            
             document.getElementById('result').innerText = resultText;
         }
+
+        const collapsible_btn = document.getElementById("collapsible-button");
+        collapsible_btn.addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            var arrow = this.querySelector('.arrow');
+            if (content.style.display === "block") {
+                content.style.display = "none";
+                arrow.textContent = "↓";
+            } else {
+                content.style.display = "block";
+                arrow.textContent = "↑";
+            }
+        });
     </script>
 </body>
 </html>
