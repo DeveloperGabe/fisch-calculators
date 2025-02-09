@@ -3,63 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:title" content="Fisch Orca Migration Calculator" />
-    <meta property="og:description" content="Calculates when the next Orca migration will be based on your server's uptime." />
+    <meta property="og:title" content="Fisch Calculators" />
+    <meta property="og:description" content="A collection of calculators for ROBLOX Fisch." />
     <meta property="og:image" content="https://raw.githubusercontent.com/DeveloperGabe/fisch-orca/main/assets/logo.png" />
     <meta property="og:url" content="https://developergabe.github.io/fisch-orca" />
     <meta property="og:type" content="website" />
-    <link rel="icon" href="assets/logo_transparent.png" type="image/png">
-    <link rel="stylesheet" href="styles.css">
-    <title>Fisch Orca Migration Calculator</title>
+    <link rel="icon" href="assets/logo.png" type="image/png">
+    <link rel="stylesheet" href="styles.css?v=2">
+    <title>Fisch Calculators</title>
 </head>
 <body>
-    <h1>Fisch Orca Migration Calculator</h1>
-    <p>Enter your server's uptime below to calculate the next migration event.<br>You can find it by enabling the server info UI in the Menu.</p><br>
-    <label>Days: <input type="number" id="days" min="0"></label>
-    <label>Hours: <input type="number" id="hours" min="0"></label>
-    <label>Minutes: <input type="number" id="minutes" min="0"></label><br>
-    <button onclick="calculateMigration()">Calculate</button>
-    <p id="result">The next migration will happen at...</p>
 
-    <button id="collapsible-button" class="collapsible-button">
-        Example Usage
-        <span class="arrow">↓</span>
-    </button>
-    <div class="collapsible-content">
-        <p>Place the server uptime data into the calculator as seen below and it'll find your next Orca event.</p>
-        <div class="example-images">
-            <img src="assets/Example_1.png" class="example-image">
-            <img src="assets/Example_2.png" class="example-image">
-			<img src="assets/Example_3.png" class="example-image">
+    <!-- tabs -->
+    <div class="tabs">
+        <button class="tab-button active" onclick="switchTab(event, 'server-events')">Server Events</button>
+        <button class="tab-button" onclick="switchTab(event, 'levels')">Levels</button>
+        <button class="tab-button" onclick="switchTab(event, 'explanations')">Explanations</button>
+    </div>
+    <div class="tab-separator"></div>
+
+    <!-- server evenets calculator -->
+    <div id="server-events" class="tab-content active">
+        <h1>Server Events Calculator</h1>
+        <p>Enter your server's uptime below to calculate the next server events.</p>
+        <label>Days: <input type="number" id="days" min="0"></label>
+        <label>Hours: <input type="number" id="hours" min="0"></label>
+        <label>Minutes: <input type="number" id="minutes" min="0"></label><br><br>
+        <button onclick="calculateEvents()">Calculate</button>
+        <p id="result-server">Next Orca event at...<br><br>Next Sunken Treasure event at...<br>&nbsp;</p>
+
+        <button id="collapsible-button" class="collapsible-button">
+            Example Usage <span class="arrow">↓</span>
+        </button>
+        <div class="collapsible-content">
+            <p>Place the server uptime data into the calculator as seen below and it'll find your next Orca event.</p>
+            <div class="example-images">
+                <img src="assets/Example_1.png" class="example-image">
+                <img src="assets/Example_2.png" class="example-image">
+                <img src="assets/Example_3.png" class="example-image">
+            </div>
         </div>
     </div>
 
+    <!-- levels calculator -->
+    <div id="levels" class="tab-content">
+        <h1>Level Calculator</h1>
+        <p>Enter the start level and end level to determine how much XP is necessary.</p>
+        <label>Start: <input type="number" id="start-level" min="0"></label>
+        <label>End: <input type="number" id="end-level" min="0"></label><br><br>
+        <button onclick="calculateXP()">Calculate</button>
+        <p id="result-level">You need...</p>
+
+        <button id="collapsible-button" class="collapsible-button">
+            More Data <span class="arrow">↓</span>
+        </button>
+        <div class="collapsible-content">
+            <div class="checkbox-container">
+                <label>
+                    <input type="checkbox" onchange="calculateXPAreas(event)">Double XP Gamepass
+                </label>
+            </div>
+            <div class="divider"></div>
+            
+            <div class="section-container">
+                <div class="section">
+                    <h3>Atlantean Storm</h3>
+                    <p></p>
+                </div>
+                <div class="vertical-line"></div>
+                <div class="section">
+                    <h3>Forsaken Pond</h3>
+                    <p></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- explanations tab -->
+    <div id="explanations" class="tab-content">
+        <div class="explanation-section">
+            <h2>Server Events Calculator</h2>
+            <p>
+                Uses server uptime to determine the next server events.<br>
+                Each event takes 1 hour to happen the first time. Afterwards, they each have their own delay:
+            </p>
+            <p><strong>Orca Event:</strong> Happens every 75 minutes.</p>
+            <p><strong>Sunken Treasure Event:</strong> Happens every 70 minutes.</p>
+            <p>
+                Therefore, we determine that the next occurence of an event is at <span class="math-expression">T(n) = 60 + n * 75</span> minutes.<br>
+                <span class="math-expression">n</span> in this case represents the number of times it has already happened.<br>
+                Using Orcas as an example to determine the next occurence:<br>
+                → <span class="math-expression">T(0) = 60 + 0 * 75 = 60</span>&nbsp;<br>
+                → <span class="math-expression">T(1) = 60 + 1 * 75 = 135</span><br><br>
+                This means that if the event happened 0 times, the next time it'll happen is at 60 minutes. If it happened once, then at 135 minutes.<br>
+                We can then use this information to determine when the next event will happen.<br><br>
+                First, we use the server's "days", "hours", and "minutes" information:<br><span class="math-expression">totalMinutes = days * 1440 + hours * 60 + minutes</span><br><br>
+                Then, we find how many times the event has already happened: <span class="math-expression">n = Math.ceil((totalMinutes - 60) / interval)</span><br><br>
+                Finally, we plug in <span class="math-expression">n</span> into the previous formula to determine when the next event will be.<br><br>
+                As an example, suppose a server currently says "2D 4H 43M" as its uptime:<br>
+                <span class="math-expression">totalMinutes = 2 * 1440 + 5 * 60 + 30 = 3163</span><br>
+                <span class="math-expression">n = Math.ceil((3163 - 60) / 75) = 42</span><br>
+                <span class="math-expression">T(42) = 60 + 42 * 75 = 3210</span><br><br>
+                If we convert "3210" into days, hours, and minutes, we get "2D 5H 30M" as our next event time.<br>
+                The remaining minutes is found by <span class="math-expression">3210 - 3163 =</span> 47 minutes.
+            </p>
+        </div>
+        <div class="explanation-separator"></div>
+        <div class="explanation-section">
+            <h2>Level Calculator</h2>
+            <p>
+                XP in Fisch is quite easy to calculate.<br>
+                The amount of XP needed to reach the next level is <span class="math-expression">190 * currentLevel</span><br><br>
+                So if you're level 130, to reach level 131 you need <span class="math-expression">190 * 130 =</span> 24,700 XP.<br><br>
+                We then just use summation ∑ to determine how much XP you need over many levels.<br>
+                For example, level 1 to 100 would be:<br>
+                <span class="math-expression">∑(n=1 to 99) 190n = 940,500</span><br><br>
+                This can all be re-written to obtain a general formula for levels, given a "start" and "end" level.<br>
+                <span class="math-expression">XP = (end - start)/2 * (start + end - 1) * 190</span><br><br>
+                <img src="assets/XP_Explanation.png" class="explanation-image">
+            </p>
+        </div>
+    </div>    
+
     <script>
-        function calculateMigration() {
+        // tab stuff
+        function switchTab(event, tabName) {
+            document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
+            document.querySelectorAll(".tab-button").forEach(button => button.classList.remove("active"));
+            document.getElementById(tabName).classList.add("active");
+            event.currentTarget.classList.add("active");
+        }
+
+        // event calculator stuff
+        const events = {
+            "Orca": 75, // Occurs every 1 hour & 15 minutes
+            "Sunken Treasure": 70 // Occurs every 1 hour & 10 minutes
+        }
+
+        function calculateEvents(e) {
             const days = parseInt(document.getElementById('days').value) || 0;
             const hours = parseInt(document.getElementById('hours').value) || 0;
             const minutes = parseInt(document.getElementById('minutes').value) || 0;
-            
-            const totalHours = days * 24 + hours + minutes / 60;
-            const currentCycle = Math.ceil((totalHours - 1) / 1.25);
-            const nextSpawn = 1 + 1.25 * currentCycle;
-            
-            const rdays = Math.floor(nextSpawn / 24);
-            const rhours = Math.floor(nextSpawn % 24);
-            const rminutes = Math.floor((nextSpawn % 1) * 60);
-            const remainingMinutes = Math.round((nextSpawn - totalHours) * 60);
-            
-            let resultText = `The next Orca event will happen at ${rdays}D ${rhours}H ${rminutes}M (in ${remainingMinutes} minutes)`;
-            
-            if(remainingMinutes > 60) resultText += "\nThere should be a migration happening right now!";
-            
-            document.getElementById('result').innerText = resultText;
+
+            const totalMinutes = days * 24 * 60 + hours * 60 + minutes;
+            let resultText = "";
+
+            for(const [event, interval] of Object.entries(events)) {
+                let currentCycle = Math.ceil((totalMinutes - 60) / interval);
+                let nextSpawn = 60 + interval * currentCycle;
+                let remainingMinutes = nextSpawn - totalMinutes;
+                
+                if(remainingMinutes === 0) {
+                    currentCycle++;
+                    nextSpawn = 60 + interval * currentCycle;
+                    remainingMinutes = nextSpawn - totalMinutes;
+                }
+
+                const rdays = Math.floor(nextSpawn / 1440);
+                const rhours = Math.floor((nextSpawn % 1440) / 60);
+                const rminutes = nextSpawn % 60;
+
+                resultText += `Next ${event} event at ${rdays}D ${rhours}H ${rminutes}M (in ${remainingMinutes} minutes). `
+                if(remainingMinutes > 60) resultText += `The current one ends in ${remainingMinutes - 60} minutes.`
+                resultText += "\n\n"
+            }
+
+            document.getElementById('result-server').innerText = resultText;
         }
 
-        const collapsible_btn = document.getElementById("collapsible-button");
-        collapsible_btn.addEventListener("click", function() {
-            this.classList.toggle("active");
-            this.nextElementSibling.classList.toggle("active");
+        // xp calculator stuff
+        let sessionXP = 0;
+        let doubleXPGamepass = 1;
+        const XPPerFish = {"Void Anglers": 2000, "Captain's Goldfish": 2800};
+
+        function calculateXPAreas(e) {
+            if(e) doubleXPGamepass = e.target.checked ? 2 : 1;
+            if(sessionXP === 0) return;
+
+            const paragraphs = document.querySelectorAll(".section-container .section p");
+            const entries = Object.keys(XPPerFish);
+
+            for (let i = 0; i < paragraphs.length; i++) {
+                const fish = entries[i];
+                const absolute = Math.ceil(sessionXP / (XPPerFish[fish] * doubleXPGamepass));
+                const clever = Math.ceil(absolute / 2.25);
+                const weekend = Math.ceil(clever / 2);
+
+                const description = `<strong>Fish needed</strong><br>→ ${absolute.toLocaleString('en-US')} ${fish}<br><br><strong>With Clever</strong><br>→ ${clever.toLocaleString('en-US')} ${fish}<br><br><strong>Clever + 2x XP Weekend</strong><br>→ ${weekend.toLocaleString('en-US')} ${fish}`
+                paragraphs[i].innerHTML = description;
+            }
+        }
+
+        function calculateXP() { // xp to level up is found by doing 190 * currentLevel
+            const start = parseInt(document.getElementById('start-level').value) || null;
+            const end = parseInt(document.getElementById('end-level').value) || null;
+            if(start === null || end === null) return;
+
+            if(start > end) return document.getElementById("result-level").innerText = "End level must be higher than start level.";
+            if(start < 1) return document.getElementById("result-level").innerText = "Start level must be greater or equal to 1.";
+
+            sessionXP = (end - start)/2 * (start + end - 1) * 190
+            const resultText = `You need ${sessionXP.toLocaleString('en-US')} XP from level ${start} to ${end}.`;
+            calculateXPAreas();
+            document.getElementById('result-level').innerText = resultText;
+        }
+
+        // collapsible button logic
+        document.querySelectorAll('.collapsible-button').forEach(button => {
+            button.addEventListener('click', function() {
+                this.classList.toggle("active");
+                this.nextElementSibling.classList.toggle("active");
+            });
         });
     </script>
 </body>
